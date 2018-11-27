@@ -8,9 +8,8 @@
 
 ## SUBMISSION TITLE
 
----
-
 *Embedded .gif of submission OR link to shiny app*
+
 ![](gganimate.gif)
 
 
