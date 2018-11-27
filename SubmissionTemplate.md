@@ -1,21 +1,28 @@
 # Harvard Data Science Animation Contest Sumbission Template
 
+This is the *main* file that judges will be looking at. It should be cleanly formatted and easy to understand.
+
 - *use this file as a template for your submission, editing and inserting your own information and work appropriately.*
 - *for help with formatting a markdown file like this one, visit https://guides.github.com/features/mastering-markdown/*
 - *for examples of how to format the code portion of your submission, look at the .R and .jpynb files in the repo*
 - ***IMPORTANT: make sure to name this file firstnamelastname_submission.md***
 
+# SUBMISSION TITLE
+
 **Author**: Harry Potter
 
-**Affiliation**: B.S Arithmency Candidate, Hogwarts School of Witchcraft and Wizardry
+**Affiliation**: B.S Arithmancy Candidate, Hogwarts School of Witchcraft and Wizardry
 
-## SUBMISSION TITLE
+##
 
-*Insert embedded .gif of submission [(how to)](https://stackoverflow.com/questions/34341808/is-there-a-way-to-add-a-gif-to-a-markdown-file) OR link to shiny app*
+*Insert embedded .gif of submission [(how to)](https://stackoverflow.com/questions/34341808/is-there-a-way-to-add-a-gif-to-a-markdown-file) OR link to web app*
 
 ![a gif of my submission](gganimate.gif)
 
+*Insert [link to code file](harrypotter_code.Rmd) from repo*
 
 **Reflection**
 
-I made this visualization in order to 
+*X words or less*
+
+I made this visualization in order to show how animated explanations of data science concepts can make learning feel like magic :sparkles:
