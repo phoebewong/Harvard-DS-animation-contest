@@ -1,10 +1,18 @@
+---
+title: "Harvard Data Science Animation Contest Submission"
+output: html_notebook
+---
+One option for your submission is an R notebook. Please note that judges will only be looking at the code and comments in this file; the write-up MUST be in the "FirstnameLastname_Submission.md" file. You do not need to knit this file.
+
+- Submission file name should be "firstnamelastname_submission.R"
+- Make sure you thoroughly comment your code 
+- And give any attribution to code you have used from other people
+
+```{r}
 library(gapminder)
 library(ggplot2)
 library(gganimate)
 
-# Submission file name should be "firstnamelastname_submission.R"
-# Make sure you thoroughly comment your code 
-# And give any attribution to code you have used from other people
 
 theme_set(theme_bw())
 
@@ -22,3 +30,5 @@ p <- ggplot(gapminder, aes(gdpPercap, lifeExp, size = pop, colour = country)) +
   ease_aes('linear')
 
 p
+```
+
