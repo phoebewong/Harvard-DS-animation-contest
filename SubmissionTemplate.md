@@ -21,7 +21,7 @@ If you are directly editing this file, don't forget to delete everything in this
 **Artifact:**
 *Insert embedded .gif of submission [(see how to)](https://stackoverflow.com/questions/34341808/is-there-a-way-to-add-a-gif-to-a-markdown-file) OR link to web app:*
 
-![a gif of my submission](ArtifactExamples/gganimate.gif)
+![a gif of my submission](ArtifactExamples/firstnamelastname_artifact.gif)
 
 **Code:** *Insert [link to code file](CodeExamples/harrypotter_code.Rmd) from repo*
 
