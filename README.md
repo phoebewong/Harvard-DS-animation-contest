@@ -1,20 +1,8 @@
-# Harvard Data Science Animation Contest Sumbission Template
+# Harvard Data Science Animation Contest Github Repo Template
 
-- *use this file as a template for your submission, editing and inserting your own information and work appropriately.*
-- *for help with formatting a markdown file like this one, visit https://guides.github.com/features/mastering-markdown/*
-- *for examples of how to format the code portion of your submission, look at the .R and .jpynb files in the repo*
+This repo is meant to be a guide for your entire submission - how to format your code, name your files, and create your final submission. 
 
-**Author**: Harry Potter
-
-**Affiliation**: B.S Statistics Candidate, Harvard College
-
-## SUBMISSION TITLE
-
-*Insert embedded .gif of submission [(how to)](https://stackoverflow.com/questions/34341808/is-there-a-way-to-add-a-gif-to-a-markdown-file) OR link to shiny app*
-
-![a gif of my submission](gganimate.gif)
-
-
-**Reflection**
-
-I made this visualization in order to 
+Your repository should contain the following items:
+- a file containing your code with the name "firstnamelastname_code" (e.g, ["harrypotter_code.R"](harrypotter_code.R))
+- an artifact (animated GIF, html5 animation, etc) that your code produced (e.g, ["gganimate.gif"](gganimate.gif))
+- 
