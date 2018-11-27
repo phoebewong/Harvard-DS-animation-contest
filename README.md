@@ -8,9 +8,9 @@
 
 ## SUBMISSION TITLE
 
-*Embedded .gif of submission OR link to shiny app*
+*Insert embedded .gif of submission [(how to)](https://stackoverflow.com/questions/34341808/is-there-a-way-to-add-a-gif-to-a-markdown-file) OR link to shiny app*
 
-![](gganimate.gif)
+![a gif of my submission](gganimate.gif)
 
 
 **Reflection**
