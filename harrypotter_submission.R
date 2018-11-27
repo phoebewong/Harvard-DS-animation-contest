@@ -2,6 +2,7 @@ library(gapminder)
 library(ggplot2)
 library(gganimate)
 
+# Submission file name should be "firstnamelastname_submission.R"
 # Make sure you thoroughly comment your code 
 # And give any attribution to code you have used from other people
 
