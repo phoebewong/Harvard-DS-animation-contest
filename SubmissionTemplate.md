@@ -3,10 +3,11 @@
 - *use this file as a template for your submission, editing and inserting your own information and work appropriately.*
 - *for help with formatting a markdown file like this one, visit https://guides.github.com/features/mastering-markdown/*
 - *for examples of how to format the code portion of your submission, look at the .R and .jpynb files in the repo*
+- ***IMPORTANT: make sure to name this file firstnamelastname_submission.md***
 
 **Author**: Harry Potter
 
-**Affiliation**: B.S Statistics Candidate, Harvard College
+**Affiliation**: B.S Arithmency Candidate, Hogwarts School of Witchcraft and Wizardry
 
 ## SUBMISSION TITLE
 
