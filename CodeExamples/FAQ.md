@@ -8,6 +8,8 @@ That's fine! We are language agnostic - the examples in this folder are written 
 - Make sure you thoroughly comment your code so it is easy to understand. Remember, submissions will be shared around the world!
 - Make sure you include necessary attributions if you use portions of someone else's code.
 
+
+
 *What if I have a question not addressed in any of the contest documentation?*
 
 Feel free to email us at viceprovost_learning@harvard.edu (subject: Animation Contest).
