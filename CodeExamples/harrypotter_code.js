@@ -7,6 +7,12 @@
 // Example of a code submission in JavaScript. Because this generates an interactive plot, 
 // the URL above is what you would include in your firstnamelastname_submission.md file (rather than a .gif, for example). 
 
+// Submission file name should be "firstnamelastname_submission.js"
+// Make sure you thoroughly comment your code 
+// And give any attribution to code you have used from other people
+
+// code from @mbostock
+
 const m0 = {
   id: "a0d38ee50fcbfc4a@68",
   variables: [
