@@ -25,8 +25,8 @@ If you are directly editing this file, don't forget to delete everything in this
 
 **Code:** *Insert [link to code file](CodeExamples/harrypotter_code.Rmd) from repo*
 
-### Reflection
+### Explanation
 
 *X words or less*
 
-I made this visualization in order to show how animated explanations of data science concepts can make learning feel like magic :sparkles:
+This visualization helps to build a more intuitive understanding of XYZ. This is because...
