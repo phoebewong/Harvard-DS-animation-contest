@@ -2,7 +2,7 @@
 
 **Can I submit something other than a .gif?**
 
-Yes! We will accept any kind of standard file (.mp4, .mov, etc). If your submission is interactive (like a d3 visualization or a Shniy app), please provide us with a link to it in your "firstnamelastname_submission.md" file. 
+Yes! We will accept any kind of standard file (.mp4, .mov, etc). If your submission is interactive (like a d3 visualization or a Shiny app), please provide us with a link to it in your "firstnamelastname_submission.md" file. 
 
 ##
 
