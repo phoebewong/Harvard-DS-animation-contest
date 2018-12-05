@@ -27,6 +27,4 @@ If you are directly editing this file, don't forget to delete everything in this
 
 ### Explanation
 
-*X words or less*
-
 This visualization helps to build a more intuitive understanding of XYZ. This is because...
