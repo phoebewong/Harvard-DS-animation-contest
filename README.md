@@ -12,7 +12,7 @@ This repo is meant to be a guide for your entire submission - how to format your
 
 *I'm on a team - how should we name our files?*
 
-Choose one person's name and use that across all files. When you [submit your repo link](https://docs.google.com/forms/d/e/1FAIpQLSdlInLMqo6Z3gqA7JA6SMUHxiGvrGqSCaPQtg44TZecnLWCYQ/viewform), you'll be able to list all the your team members
+Choose one person's name and use that across all files. When you [submit your repo link](https://docs.google.com/forms/d/e/1FAIpQLSdlInLMqo6Z3gqA7JA6SMUHxiGvrGqSCaPQtg44TZecnLWCYQ/viewform), you'll be able to list all the your team members.
 
 
 If you'd like, you can fork this repo as a starting point. If you have any questions, please feel free to contact us at  viceprovost_learning@harvard.edu (subject: Animation Contest).
