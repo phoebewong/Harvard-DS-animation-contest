@@ -1,0 +1,146 @@
+---
+title: "T-test assumption and p-value"
+runtime: shiny
+author: "Phoebe Wong"
+output: 
+  flexdashboard::flex_dashboard:
+    theme: cosmo
+    orientation: columns
+    vertical_layout: fill
+    source_code: embed
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(tidyverse)
+library(broom)
+```
+
+
+
+Column {.sidebar}
+-----------------------------------------------------------------------
+
+How are assumptions of t-test and p-value related?
+
+p-value or $\alpha$, refers to the probability of a Type I error, meaning that the probability that a test will detect an effect, if an effect is really *not* there.
+
+p-value only fairly reflects the Type I error if the assumptions underlying the test are met. This application allows you to explore how different violations of the assumptions are going to affect the distribution of the p-value.
+
+#### Move the sliders to explore the relationships
+
+```{r}
+sliderInput("SigLevel", "Significance level", min = 1, max = 20, 
+            value = 5, post = "%")
+
+
+sliderInput("mux", "Mean of first sample", min = 0, max = 1000, step = 10,
+            value = 0)
+sliderInput("muy", "Mean of second sample", min = 0, max = 1000, step = 10,
+            value = 0)
+
+sliderInput("varx", "Sample Variance of first sample", min = 0, max = 100, 
+            value = 1)
+sliderInput("vary", "Sample Variance of second sample", min = 0, max = 100,
+            value = 1)
+
+sliderInput("nx", "Mean of first sample", min = 0, max = 10000, step = 10, 
+            value = 50)
+sliderInput("ny", "Mean of second sample", min = 0, max = 10000, step = 10, 
+            value = 50)
+
+sliderInput("nsims", "Number of simulations", min = 100, max = 100000, step = 100, 
+            value = 10000)
+
+```
+
+The sample sizes here are per variation (A and B in an A/B test), not the test as a whole.
+
+
+Column 
+-----------------------------------------------------------------------
+
+### Rejection rate distribution (at 0.05 level) {data-height=800}
+
+```{r}
+##########
+#
+# Illustrations of Assumption Violations
+#
+##########
+
+##############
+# Ex. 1 - Both Standard Normal
+##############
+
+# x=seq(-10,10,0.1)
+# fx=dnorm(x)
+#density
+renderPlot({
+  nsims=input$nsims
+  nx=input$nx
+  ny=input$ny
+  mux=input$mux
+  muy=input$muy
+  varx=input$varx
+  vary=input$vary
+  SigLevel=input$SigLevel
+  
+  tstats=pvals=rep(NA,nsims)
+  
+  for(i in 1:nsims){
+    x = rnorm(nx,mux,sqrt(varx))
+    y = rnorm(ny,muy,sqrt(vary))
+    spooled= sqrt(((nx-1)*var(x)+(ny-1)*var(y))/(nx+ny-2))
+    tstats[i] = (mean(x)-mean(y))/(spooled*sqrt(1/nx+1/ny))
+    pvals[i] = 2*(1-pt(abs(tstats[i]),df=nx+ny-2))
+  }
+    
+  hist(pvals,col="pink",xlab="two-sided p-value")
+  abline(v=(SigLevel/100),col="red",lwd=3)
+  mean(pvals<(SigLevel/100))
+})
+```
+
+```{r, eval=FALSE}
+renderPlot({
+    seq(1000, 1e4, by = 1000) %>%
+        map_df(~ power.prop.test(p1 = input$Baseline / 100,
+                                 p2 = seq(input$Baseline / 100, input$Baseline * 1.5 / 100, 
+                                          by=0.001), 
+                                 n = .x, 
+                                 power = NULL, 
+                                 sig.level = input$SigLevel / 100) %>%
+                   tidy()) %>%
+        mutate(effect = (p2 / p1 - 1)) %>%
+        ggplot(aes(effect, power, color = n, group = n)) + 
+        geom_hline(yintercept = input$Power / 100, linetype = 2, color = "gray50", alpha = 0.5, size = 1.5) +
+        geom_line(size = 1.5, alpha = 0.7) +
+        theme_minimal(base_size = 18) +
+        scale_y_continuous(labels = scales::percent_format(),
+                           limits = c(0, NA)) +
+        scale_x_continuous(labels = scales::percent_format()) +
+        scale_color_gradient(high = "#0077CC", low = "#B8E0C5",
+                             labels = scales::comma_format()) +
+        labs(x = "Effect size (relative % change in rate)", y = "Power", color = "Sample size") 
+})
+```
+
+### With those parameters, you can measure... {data-height=200}
+
+```{r, eval=FALSE}
+renderTable({
+    seq(1000, 1e4, by = 1000) %>%
+        map_df(~ power.prop.test(p1 = input$Baseline / 100,
+                                 p2 = NULL, 
+                                 n = .x, 
+                                 power = input$Power / 100, 
+                                 sig.level = input$SigLevel / 100) %>%
+                   tidy()) %>%
+        mutate(effect = scales::percent(p2 / p1 - 1),
+               n = scales::comma(n)) %>% 
+        select(`A relative % change of` = effect, 
+               `With a sample size in each group of` = n)
+})
+```
+
