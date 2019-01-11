@@ -5,11 +5,12 @@ author: "Phoebe Wong"
 output: 
   flexdashboard::flex_dashboard:
     theme: cosmo
-    orientation: columns
-    vertical_layout: fill
+    orientation: rows
+    vertical_layout: scroll
     source_code: embed
 ---
-
+Main Page{data-orientation=rows}
+===================================== 
 ```{r setup, include=FALSE}
 library(flexdashboard)
 library(tidyverse)
@@ -17,15 +18,23 @@ library(broom)
 ```
 
 
-
-Column {.sidebar}
+Inputs {.sidebar data-width=300}
 -----------------------------------------------------------------------
 
 How are assumptions of t-test and p-value related?
 
-p-value or $\alpha$, refers to the probability of a Type I error, meaning that the probability that a test will detect an effect, if an effect is really *not* there.
+p-value, refers to the probability of a Type I error, meaning that the probability that a test will detect an effect, if an effect is really *not* there.
 
-p-value only fairly reflects the Type I error if the assumptions underlying the test are met. This application allows you to explore how different violations of the assumptions are going to affect the distribution of the p-value.
+p-value only reflects the true Type I error if the assumptions underlying the test are not violated, in other words, the true rejection rate is the same as your desired significance level. This application allows you to explore how different violations of the assumptions are going to affect the distribution of the p-value.
+
+Test-statistics (t-score):
+
+Pooled t-test:
+$$T = \frac{\bar{X} - \bar{Y}}{S_{pooled} \sqrt{\frac{1}{n_x} + \frac{1}{n_y}}} \sim t_{n_x + n_y -2}$$
+$$S_{pooled} = \sqrt{\frac{(n_x-1) s^2_x + (n_y-1) s^2_y}{n_x + n_y -2}}$$
+Unpooled t-test:
+
+$$T = \frac{\bar{X} - \bar{Y}}{\sqrt{\frac{S^2_x}{n_x} + \frac{S^2_y}{n_y}}} \sim t_{n_x + n_y -2}$$
 
 #### Move the sliders to explore the relationships
 
@@ -33,49 +42,42 @@ p-value only fairly reflects the Type I error if the assumptions underlying the 
 sliderInput("SigLevel", "Significance level", min = 1, max = 20, 
             value = 5, post = "%")
 
-
-sliderInput("mux", "Mean of first sample", min = 0, max = 1000, step = 10,
-            value = 0)
-sliderInput("muy", "Mean of second sample", min = 0, max = 1000, step = 10,
-            value = 0)
-
-sliderInput("varx", "Sample Variance of first sample", min = 0, max = 100, 
-            value = 1)
-sliderInput("vary", "Sample Variance of second sample", min = 0, max = 100,
-            value = 1)
-
-sliderInput("nx", "Mean of first sample", min = 0, max = 10000, step = 10, 
-            value = 50)
-sliderInput("ny", "Mean of second sample", min = 0, max = 10000, step = 10, 
-            value = 50)
-
 sliderInput("nsims", "Number of simulations", min = 100, max = 100000, step = 100, 
             value = 10000)
 
 ```
 
-The sample sizes here are per variation (A and B in an A/B test), not the test as a whole.
+Credit to Mr. Kevin Rader from Harvard Department of Statistics for providing the idea (from his amazingly-taught Stat 139, Linear Models) and some of the code for the simulation
 
-
-Column 
+Row {data-height=310}
 -----------------------------------------------------------------------
 
-### Rejection rate distribution (at 0.05 level) {data-height=800}
+### Sample characteristics of sample 1
 
-```{r}
-##########
-#
-# Illustrations of Assumption Violations
-#
-##########
+```{r sliderinput-x}
+sliderInput("mux", "Mean of sample 1", min = 0, max = 1000, step = 10,
+            value = 0)
+sliderInput("varx", "Sample variance of sample 1", min = 0, max = 100, 
+            value = 1)
+sliderInput("nx", "Size of sample 1", min = 0, max = 10000, step = 10, 
+            value = 50)
+```
 
-##############
-# Ex. 1 - Both Standard Normal
-##############
+### Sample characteristics of sample 2
+```{r sliderinput-y}
+sliderInput("muy", "Mean of sample 2", min = 0, max = 1000, step = 10,
+            value = 0)
+sliderInput("vary", "Sample variance of sample 2", min = 0, max = 100,
+            value = 1)
+sliderInput("ny", "Szie of sample 2", min = 0, max = 10000, step = 10, 
+            value = 50)
+```
 
-# x=seq(-10,10,0.1)
-# fx=dnorm(x)
-#density
+Row 
+-----------------------------------------------------------------------
+### Rejection rate distribution {data-height=500}
+
+```{r plot}
 renderPlot({
   nsims=input$nsims
   nx=input$nx
@@ -85,62 +87,176 @@ renderPlot({
   varx=input$varx
   vary=input$vary
   SigLevel=input$SigLevel
+  sam_x = sam_y = tstats=pvals=rep(NA,nsims)
   
-  tstats=pvals=rep(NA,nsims)
+  for(i in 1:nsims){
+    x = rnorm(nx,mux,sqrt(varx))
+    sam_x[i] = mean(x)
+    y = rnorm(ny,muy,sqrt(vary))
+    sam_y[i] = mean(y)
+    spooled = sqrt(((nx-1)*var(x)+(ny-1)*var(y))/(nx+ny-2))
+    tstats[i] = (mean(x)-mean(y))/(spooled*sqrt(1/nx+1/ny))
+    pvals[i] = 2*(1-pt(abs(tstats[i]),df=nx+ny-2))
+  }
+  
+  rej_rate <- mean(pvals<(SigLevel/100))
+
+  hist(pvals,col="pink",xlab="two-sided p-value", main = paste("Rejection rate: ",rej_rate ," at 0.05 sig. level"))
+  
+  abline(v=(SigLevel/100),col="red",lwd=3)
+})
+```
+
+Row 
+-----------------------------------------------------------------------
+### Underlying distribution of mean of sample 1
+
+```{r}
+renderPlot({
+  nsims=input$nsims
+  nx=input$nx
+  ny=input$ny
+  mux=input$mux
+  muy=input$muy
+  varx=input$varx
+  vary=input$vary
+  SigLevel=input$SigLevel
+  sam_x = tstats=pvals=rep(NA,nsims)
+  
+  for(i in 1:nsims){
+    x = rnorm(nx,mux,sqrt(varx))
+    sam_x[i] = mean(x)
+    y = rnorm(ny,muy,sqrt(vary))
+    spooled = sqrt(((nx-1)*var(x)+(ny-1)*var(y))/(nx+ny-2))
+    tstats[i] = (mean(x)-mean(y))/(spooled*sqrt(1/nx+1/ny))
+    pvals[i] = 2*(1-pt(abs(tstats[i]),df=nx+ny-2))
+  }
+  hist(sam_x,  col="lightblue", main = "Distribution of Simulated Sample 1 mean", xlab = "Mean of simulated sample 1") #breaks = 10,
+})
+```
+
+### Underlying distribution of mean of sample 2
+
+```{r}
+renderPlot({
+  nsims=input$nsims
+  nx=input$nx
+  ny=input$ny
+  mux=input$mux
+  muy=input$muy
+  varx=input$varx
+  vary=input$vary
+  SigLevel=input$SigLevel
+  sam_y = tstats=pvals=rep(NA,nsims)
   
   for(i in 1:nsims){
     x = rnorm(nx,mux,sqrt(varx))
     y = rnorm(ny,muy,sqrt(vary))
-    spooled= sqrt(((nx-1)*var(x)+(ny-1)*var(y))/(nx+ny-2))
+    sam_y[i] = mean(y)
+    spooled = sqrt(((nx-1)*var(x)+(ny-1)*var(y))/(nx+ny-2))
     tstats[i] = (mean(x)-mean(y))/(spooled*sqrt(1/nx+1/ny))
     pvals[i] = 2*(1-pt(abs(tstats[i]),df=nx+ny-2))
   }
-    
-  hist(pvals,col="pink",xlab="two-sided p-value")
-  abline(v=(SigLevel/100),col="red",lwd=3)
-  mean(pvals<(SigLevel/100))
+  hist(sam_y, breaks = 10, col="lightblue", main = "Distribution of Simulated Sample 2 mean", xlab = "two sided p-values")
 })
 ```
 
-```{r, eval=FALSE}
-renderPlot({
-    seq(1000, 1e4, by = 1000) %>%
-        map_df(~ power.prop.test(p1 = input$Baseline / 100,
-                                 p2 = seq(input$Baseline / 100, input$Baseline * 1.5 / 100, 
-                                          by=0.001), 
-                                 n = .x, 
-                                 power = NULL, 
-                                 sig.level = input$SigLevel / 100) %>%
-                   tidy()) %>%
-        mutate(effect = (p2 / p1 - 1)) %>%
-        ggplot(aes(effect, power, color = n, group = n)) + 
-        geom_hline(yintercept = input$Power / 100, linetype = 2, color = "gray50", alpha = 0.5, size = 1.5) +
-        geom_line(size = 1.5, alpha = 0.7) +
-        theme_minimal(base_size = 18) +
-        scale_y_continuous(labels = scales::percent_format(),
-                           limits = c(0, NA)) +
-        scale_x_continuous(labels = scales::percent_format()) +
-        scale_color_gradient(high = "#0077CC", low = "#B8E0C5",
-                             labels = scales::comma_format()) +
-        labs(x = "Effect size (relative % change in rate)", y = "Power", color = "Sample size") 
-})
-```
 
-### With those parameters, you can measure... {data-height=200}
+Edge cases of Pooled t-test{data-orientation=rows}
+===================================== 
 
-```{r, eval=FALSE}
+On this page, we can see that how varying variance with varying sample sizes affect the rejection rate. The first two plots shows how the rejection rate is inflated/deflated. The last plot shows how unpooled t-test fix the issue and restore the rejection rate.
+
+The reason that the issue is fixed by using unpooled t-test is because the T-statistics in unpooled t-test is calculated by weighting the variances of the two samples with their respective sample sizes, i.e., $$T = \frac{\bar{X} - \bar{Y}}{\sqrt{\frac{S^2_x}{n_x} + \frac{S^2_y}{n_y}}}$$, when pooled t-test doesn't weight the pooled variance by their sample sizes.
+
+Row {data-height=600}
+-------------------------------------
+
+### Varying Variance w/ more obs's in large variance group
+
+```{r plot2}
+nsims=10000
+nx=50
+ny=500
+mux=0
+muy=0
+varx=1
+vary=9
+
 renderTable({
-    seq(1000, 1e4, by = 1000) %>%
-        map_df(~ power.prop.test(p1 = input$Baseline / 100,
-                                 p2 = NULL, 
-                                 n = .x, 
-                                 power = input$Power / 100, 
-                                 sig.level = input$SigLevel / 100) %>%
-                   tidy()) %>%
-        mutate(effect = scales::percent(p2 / p1 - 1),
-               n = scales::comma(n)) %>% 
-        select(`A relative % change of` = effect, 
-               `With a sample size in each group of` = n)
+  tibble("Sample size" = c(50, 500), "mean" = c(0,0), "variance" = c(1, 9))
 })
+
+tstats=pvals=rep(NA,nsims)
+
+for(i in 1:nsims){
+ x = rnorm(nx,mux,sqrt(varx))
+ y = rnorm(ny,muy,sqrt(vary))
+ spooled= sqrt(((nx-1)*var(x)+(ny-1)*var(y))/(nx+ny-2))
+ tstats[i] = (mean(x)-mean(y))/(spooled*sqrt(1/nx+1/ny))
+ pvals[i] = 2*(1-pt(abs(tstats[i]),df=nx+ny-2))
+}
+
+rej_rate_1 <- mean(pvals<.05)
+
+hist(pvals,col="pink",xlab="two-sided p-value", main = paste("Rejection rate deflated: ",rej_rate_1 ," at 0.05 sig. level"))
+abline(v=0.05,col="red",lwd=3)
 ```
 
+### Varying Variance w/ more obs's in small variance group
+```{r}
+nx=500
+ny=50
+mux=0
+muy=0
+varx=1
+vary=9
+
+renderTable({
+  tibble("Sample size" = c(500, 50), "mean" = c(0,0), "variance" = c(1, 9))
+})
+tstats=pvals=rep(NA,nsims)
+
+for(i in 1:nsims){
+ x = rnorm(nx,mux,sqrt(varx))
+ y = rnorm(ny,muy,sqrt(vary))
+ spooled= sqrt(((nx-1)*var(x)+(ny-1)*var(y))/(nx+ny-2))
+ tstats[i] = (mean(x)-mean(y))/(spooled*sqrt(1/nx+1/ny))
+ pvals[i] = 2*(1-pt(abs(tstats[i]),df=nx+ny-2))
+}
+
+rej_rate_2 <- mean(pvals<.05)
+hist(pvals,col="pink",xlab="two-sided p-value", main = paste("Rejection rate inflated: ",rej_rate_2 ," at 0.05 sig. level"))
+abline(v=0.05,col="red",lwd=3)
+```
+
+Row {data-height=600}
+-------------------------------------
+
+### Unpooled t-test!
+```{r}
+nx=500
+ny=50
+mux=0
+muy=0
+varx=1
+vary=9
+
+renderTable({
+  tibble("Sample size" = c(500, 50), "mean" = c(0,0), "variance" = c(1, 9))
+})
+
+tstats=pvals=rep(NA,nsims)
+
+for(i in 1:nsims){
+ x = rnorm(nx,mux,sqrt(varx))
+ y = rnorm(ny,muy,sqrt(vary))
+ tstats[i] = (mean(x)-mean(y))/(sqrt(var(x)/nx+var(y)/ny))
+ satterthwaite=(var(x)/nx+var(y)/ny)^2/(var(x)^2/nx^2/(nx-1)+var(y)^2/ny^2/(ny-1))
+ pvals[i] = 2*(1-pt(abs(tstats[i]),df=satterthwaite))
+}
+
+rej_rate_3 <- mean(pvals<.05)
+hist(pvals,col="pink",xlab="two-sided p-value", main = paste("Rejection rate fixed: ", rej_rate_3 ," at 0.05 sig. level"))
+abline(v=0.05,col="red",lwd=3)
+```

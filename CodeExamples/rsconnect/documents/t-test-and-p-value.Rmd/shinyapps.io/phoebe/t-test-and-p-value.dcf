@@ -1,0 +1,12 @@
+name: t-test-and-p-value
+title: t-test-and-p-value
+username:
+account: phoebe
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 636733
+bundleId: 1808086
+url: https://phoebe.shinyapps.io/t-test-and-p-value/
+when: 1547175724.0125
+asMultiple: FALSE
+asStatic: FALSE
